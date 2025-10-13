@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hrapp-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hrapp-backend
+  template:
+    metadata:
+      labels:
+        app: hrapp-backend
+    spec:
+      containers:
+      - name: hrapp-backend
+        image: princenarayanan/hr-management-app:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: MONGO_URI
+          value: "mongodb://hrapp-mongo-service:27017/hrapp"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hrapp-backend-service
+spec:
+  selector:
+    app: hrapp-backend
+  ports:
+  - port: 80
+    targetPort: 3000
+  type: ClusterIP
