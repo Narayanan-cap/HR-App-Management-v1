@@ -1,33 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hr-web-app
+  name: hrapp-backend
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: hr-web-app
+      app: hrapp-backend
   template:
     metadata:
       labels:
-        app: hr-web-app
+        app: hrapp-backend
     spec:
       containers:
-      - name: hr-web-app
+      - name: hrapp-backend
         image: princenarayanan/hr-management-app:latest
         ports:
         - containerPort: 3000
         env:
         - name: MONGO_URI
-          value: "mongodb://hr-app-mongo-service:27017/hrapp"
+          value: "mongodb://hrapp-mongo-service:27017/hrapp"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: hr-web-app-service
+  name: hrapp-backend-service
 spec:
   selector:
-    app: hr-web-app
+    app: hrapp-backend
   ports:
   - port: 3030
     targetPort: 3000

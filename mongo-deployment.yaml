@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hr-app-mongo
+  name: hrapp-mongo
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: hr-app-mongo
+      app: hrapp-mongo
   template:
     metadata:
       labels:
-        app: hr-app-mongo
+        app: hrapp-mongo
     spec:
       containers:
       - name: mongo
@@ -27,10 +27,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: hr-app-mongo-service
+  name: hrapp-mongo-service
 spec:
   selector:
-    app: hr-app-mongo
+    app: hrapp-mongo
   ports:
   - port: 27017
     targetPort: 27017
