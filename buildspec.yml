@@ -1,0 +1,32 @@
+version: 0.2
+
+env:
+  variables:
+    CLUSTER_NAME: narayanan-test-cluster
+    AWS_REGION: us-west-1
+    ECR_REPO: 636768524979.dkr.ecr.us-west-1.amazonaws.com/narayanan-cap
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPO
+      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - echo Setting up kubectl...
+      - aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
+  build:
+    commands:
+      - echo Building Docker image...
+      - docker build -t $ECR_REPO:$IMAGE_TAG .
+      - docker push $ECR_REPO:$IMAGE_TAG
+  post_build:
+    commands:
+      - echo Updating Kubernetes deployment...
+      - sed -i "s|image: .*|image: $ECR_REPO:$IMAGE_TAG|" app-deployment (2).yaml
+      - kubectl apply -f mongo-deployment.yaml
+      - kubectl apply -f app-deployment.yaml
+
+artifacts:
+  files:
+    - app-deployment.yaml
+    - mongo-deployment.yaml
