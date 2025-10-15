@@ -22,9 +22,9 @@ phases:
   post_build:
     commands:
       - echo Updating Kubernetes deployment...
-      - sed -i "s|image: .*|image: $ECR_REPO:$IMAGE_TAG|" app-deployment.yaml
+      - 'sed -i "s|image: .*|image: $ECR_REPO:$IMAGE_TAG|" app-deployment.yaml'
       - kubectl apply -f mongo-deployment.yaml
-      - kubectl apply -f app-deployment-2.yaml
+      - kubectl apply -f app-deployment.yaml
 
 artifacts:
   files:
